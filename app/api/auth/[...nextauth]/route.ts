@@ -1,5 +1,6 @@
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient, UserType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -30,6 +31,7 @@ declare module "next-auth/jwt" {
 const prisma = new PrismaClient();
 
 const handler = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",

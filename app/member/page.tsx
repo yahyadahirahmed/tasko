@@ -1,7 +1,9 @@
+'use client';
 import React from 'react'
 
-export default function Member() {
+export default function MemberPage() {
   return (
-    <div> Team Member Page </div>
+    <div>Member</div>
   )
 }
+
