@@ -1,0 +1,7 @@
+{
+  "/member/page": "app/member/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/route": "app/api/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/tasks/[taskId]/route": "app/api/tasks/[taskId]/route.js"
+}
