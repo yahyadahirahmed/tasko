@@ -1,7 +1,10 @@
 {
-  "/member/page": "app/member/page.js",
+  "/login/page": "app/login/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/member/page": "app/member/page.js",
   "/api/route": "app/api/route.js",
+  "/api/tasks/[taskId]/route": "app/api/tasks/[taskId]/route.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/tasks/[taskId]/route": "app/api/tasks/[taskId]/route.js"
+  "/admin/page": "app/admin/page.js"
 }

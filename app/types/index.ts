@@ -18,6 +18,7 @@ export interface Task {
   assignedToId?: string | null;  // Optional field
   deadline: Date;
   state: TaskState;
+  position: number;
   
   // Relations (optional - include if you need them in the UI)
   createdBy?: User;

@@ -1,10 +1,12 @@
-import React from 'react';
-import { Task, TaskState } from '../types';
+import { DndContext, DragEndEvent, DragOverlay } from '@dnd-kit/core';
+import React, { useState } from 'react';
 import { Column } from './Column';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+import { Task as TaskType, TaskState } from '../types';
+import { Task } from './Task';
 
 export function KanbanBoard() {
-  const [tasks, setTasks] = React.useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskType[]>([]);
+  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
 
   React.useEffect(() => {
     const fetchTasks = async () => {
@@ -19,20 +21,23 @@ export function KanbanBoard() {
     fetchTasks();
   }, []);
 
+  const handleDragStart = ({ active }: any) => {
+    const task = tasks.find(task => task.id === active.id);
+    setActiveTask(task || null);
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveTask(null);
     const { active, over } = event;
-    
     if (!over) return;
 
     const taskId = active.id;
     const newState = over.id as TaskState;
 
-    // Update task state locally
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === taskId ? { ...task, state: newState } : task
     ));
 
-    // Update task state in the database
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: 'PATCH',
@@ -44,7 +49,6 @@ export function KanbanBoard() {
 
       if (!response.ok) {
         console.error('Failed to update task state');
-        // Optionally revert the local state change
       }
     } catch (error) {
       console.error('Error updating task state:', error);
@@ -56,17 +60,17 @@ export function KanbanBoard() {
   const completedTasks = tasks.filter(task => task.state === TaskState.Completed);
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <div className="p-4">
-        <div className="flex gap-4">
-          <Column title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
-          <Column title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />
-          <Column title="Completed" tasks={completedTasks} state={TaskState.Completed} />
-        </div>
+    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <div className="p-4 flex gap-4">
+        <Column title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
+        <Column title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />
+        <Column title="Completed" tasks={completedTasks} state={TaskState.Completed} />
       </div>
+      <DragOverlay>
+        {activeTask ? <Task task={activeTask} /> : null}
+      </DragOverlay>
     </DndContext>
   );
 }
 
 export default KanbanBoard;
-
