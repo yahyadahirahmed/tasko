@@ -1,12 +1,12 @@
 import { prisma } from '@/app/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { TaskState, TaskPriority } from '@prisma/client';
 
-export async function PATCH(request: Request, context: { params: { taskId: string } }) {
+export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
   try {
     // Await params
-    const { params } = context;
     const { taskId } = await params;
+    
 
     // Parse the request body
     const body = await request.json();
@@ -52,14 +52,12 @@ export async function PATCH(request: Request, context: { params: { taskId: strin
     console.log('Task updated successfully:', updatedTask);
 
     return NextResponse.json(updatedTask);
-  } catch (error) {
-    console.error('Error updating task:', error);
-
-    // Narrowing the error type to PrismaClientKnownRequestError
-    if (error instanceof Error && (error as any).code === 'P2025') {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error updating task:', error.message);
+    } else {
+      console.error('Unknown error occurred:', error);
     }
-
     return NextResponse.json({ error: 'Failed to update task' }, { status: 500 });
   }
 }

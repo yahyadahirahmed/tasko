@@ -1,5 +1,4 @@
 import React from 'react'
-import { prisma } from '../lib/prisma';
 import LogoutButton from '../components/LogoutButton';
 
 

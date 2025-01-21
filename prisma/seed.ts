@@ -1,7 +1,5 @@
-import Admin from '@/app/admin/page';
 import { prisma } from '../app/lib/prisma';
-import { PrismaClient, TaskState, TaskPriority } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import { TaskState, TaskPriority } from '@prisma/client';
 
 
 
