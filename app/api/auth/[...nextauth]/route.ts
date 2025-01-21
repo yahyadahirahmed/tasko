@@ -1,7 +1,8 @@
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient, UserType } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { UserType } from "@/app/types";
 import bcrypt from "bcryptjs";
 
 // Extend the built-in session types
@@ -77,7 +78,7 @@ const handler = NextAuth({
             id: user.id,
             username: user.username,
             email: user.email,
-            userType: user.userType,
+            userType: user.userType as UserType,
           };
         } catch (error) {
           console.error("Auth error:", error);
