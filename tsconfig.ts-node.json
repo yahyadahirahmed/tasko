@@ -7,4 +7,3 @@
     },
     "include": ["prisma/seed.ts"]
   }
-  
