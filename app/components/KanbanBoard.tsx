@@ -1,4 +1,4 @@
-import { DndContext, DragEndEvent, DragOverlay } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import React, { useState } from 'react';
 import { Column } from './Column';
 import { Task as TaskType, TaskState } from '../types';
@@ -22,10 +22,11 @@ export function KanbanBoard() {
     fetchTasks();
   }, []);
 
-  const handleDragStart = ({ active }: any) => {
-    const task = tasks.find(task => task.id === active.id);
+  const handleDragStart = (event: DragStartEvent) => {
+    const task = tasks.find(task => task.id === event.active.id);
     setActiveTask(task || null);
   };
+
 
   const handleDragEnd = async (event: DragEndEvent) => {
     setActiveTask(null);

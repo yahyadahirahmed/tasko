@@ -4,12 +4,6 @@ import LogoutButton from '../components/LogoutButton';
 
 
 export default async function Admin() {
-    // Fetch tasks for the current user
-    const tasks = await prisma.task.findMany({
-      where: {
-        // Add your filtering logic here
-      }
-    });
   
     return (
       <div className='flex'>

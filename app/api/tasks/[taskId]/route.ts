@@ -52,11 +52,11 @@ export async function PATCH(request: Request, context: { params: { taskId: strin
     console.log('Task updated successfully:', updatedTask);
 
     return NextResponse.json(updatedTask);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error updating task:', error);
 
-    // Prisma error for record not found
-    if (error.code === 'P2025') {
+    // Narrowing the error type to PrismaClientKnownRequestError
+    if (error instanceof Error && (error as any).code === 'P2025') {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
