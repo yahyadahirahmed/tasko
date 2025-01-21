@@ -17,6 +17,7 @@ export function KanbanBoard() {
       }
       const data = await response.json();
       setTasks(data);
+      console.log(data)
     };
     fetchTasks();
   }, []);
@@ -34,18 +35,24 @@ export function KanbanBoard() {
     const taskId = active.id;
     const newState = over.id as TaskState;
 
-    setTasks(tasks.map(task =>
+    // Update the task state
+    setTasks(tasks => tasks.map(task =>
       task.id === taskId ? { ...task, state: newState } : task
     ));
 
     try {
+      console.log('PATCH Request:', { taskId, newState });
+
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ state: newState }),
+        body: JSON.stringify({ state: newState, priority: activeTask?.priority }),
       });
+      
+      
+      
 
       if (!response.ok) {
         console.error('Failed to update task state');
@@ -55,6 +62,7 @@ export function KanbanBoard() {
     }
   };
 
+  // Filter tasks by state
   const todoTasks = tasks.filter(task => task.state === TaskState.ToDo);
   const inProgressTasks = tasks.filter(task => task.state === TaskState.InProgress);
   const completedTasks = tasks.filter(task => task.state === TaskState.Completed);

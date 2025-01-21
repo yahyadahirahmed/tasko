@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 55, "column": 0}, "map": {"version":3,"sources":["file:///Users/yahya/Documents/FinalYearProject/tasko/app/api/login/route.ts"],"sourcesContent":["import {NextResponse} from 'next/server';\n\n\n\nexport const GET = () => {\n    return new NextResponse(\"shush\");\n    };"],"names":[],"mappings":";;;AAAA;;AAIO,MAAM,MAAM;IACf,OAAO,IAAI,gIAAA,CAAA,eAAY,CAAC;AACxB"}},
-    {"offset": {"line": 63, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
-}

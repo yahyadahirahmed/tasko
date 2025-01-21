@@ -8,6 +8,7 @@ export async function GET() {
         id: true,
         text: true,
         state: true,
+        priority: true
       },
     });
 

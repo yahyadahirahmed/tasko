@@ -32,4 +32,4 @@ return (
     {task.text}
   </div>
 );
-} 
+}
