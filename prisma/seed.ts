@@ -1,5 +1,5 @@
 import { prisma } from '../app/lib/prisma';
-import { TaskState, TaskPriority } from '@prisma/client';
+import { TaskState, TaskPriority } from '@/app/types';
 
 
 
