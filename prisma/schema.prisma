@@ -1,16 +1,13 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file for PostgreSQL
+// Learn more at https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // PostgreSQL connection string from .env
 }
 
 enum UserType {
@@ -35,8 +32,8 @@ model Task {
   id           String       @id @default(cuid())
   text         String
   createdAt    DateTime     @default(now())
-  createdBy    User         @relation("TaskCreator", fields: [createdById], references: [id], map: "Task_CreatedBy_fkey")
-  assignedTo   User?        @relation("TaskAssignee", fields: [assignedToId], references: [id], map: "Task_AssignedTo_fkey")
+  createdBy    User         @relation("TaskCreator", fields: [createdById], references: [id])
+  assignedTo   User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
   createdById  String
   assignedToId String?
   deadline     DateTime
@@ -46,13 +43,13 @@ model Task {
 
 model User {
   id            String   @id @default(cuid())
-  email         String
+  email         String   @unique
   username      String   @unique
   password      String
   createdAt     DateTime @default(now())
-  userType      UserType @default(TEAM_MEMBER) // default enum value
+  userType      UserType @default(TEAM_MEMBER) // Default enum value
   managerId     String?
-  manager       User?    @relation(name: "UserToManager", fields: [managerId], references: [id]) // Assigned manager
+  manager       User?    @relation("UserToManager", fields: [managerId], references: [id]) // Assigned manager
   team          User[]   @relation("UserToManager") // Users managed by this user
   tasksCreated  Task[]   @relation("TaskCreator")
   tasksAssigned Task[]   @relation("TaskAssignee")
