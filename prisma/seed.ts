@@ -1,10 +1,11 @@
 import { prisma } from '../app/lib/prisma';
-import { TaskState, TaskPriority } from '@/app/types';
+import bcrypt from 'bcryptjs';
+import { TaskState, TaskPriority } from '../app/types';
 
 
 
 async function main() {
-  await prisma.task.deleteMany();
+  // await prisma.task.deleteMany();
   // await prisma.user.deleteMany();
 
   // first users in db
@@ -46,8 +47,8 @@ async function main() {
   // const adminPassword = await bcrypt.hash('bosh', 10);
   // const admin = await prisma.user.create({
   //   data: {
-  //     username: 'boss0',
-  //     email: 'boss2@boss.com',
+  //     username: 'admin',
+  //     email: 'admin@gmail.com',
   //     password: adminPassword,
   //     userType: 'ADMIN',
   //   },
@@ -57,10 +58,21 @@ async function main() {
   // const memberPassword = await bcrypt.hash('member', 10);
   // const member = await prisma.user.create({
   //   data: {
-  //     username: 'member1',
-  //     email: 'member1@example.com',
+  //     username: 'member',
+  //     email: 'member@gmail.com',
   //     password: memberPassword,
   //     userType: 'TEAM_MEMBER',
+  //   },
+  // });
+
+  // // Create a team manager
+  // const managerPassword = await bcrypt.hash('manager', 10);
+  // const manager = await prisma.user.create({
+  //   data: {
+  //     username: 'manager',
+  //     email: 'manager@gmail.com',
+  //     password: managerPassword,
+  //     userType: 'TEAM_MANAGER',
   //   },
   // });
 
@@ -75,9 +87,9 @@ async function main() {
       { text: 'Low Priority Task', state: TaskState.ToDo, priority: TaskPriority.low, createdById: admin.id, assignedToId: member.id, deadline: new Date() },
     ],
   });
+// console.log({ admin, member, manager });
 }
 
-//   // console.log({ admin, member, task });
 
 
 main()
