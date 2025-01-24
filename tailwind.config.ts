@@ -11,6 +11,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        kanban: "var(--kanban)",
+        bluye: "var(--bluye)",
+        greeney: "var(--greeney)",
+        greyey: "var(--greyey)",
+        black: "var(--black)",
       },
     },
   },

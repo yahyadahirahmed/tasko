@@ -51,17 +51,13 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0b0f19] flex items-center justify-center overflow-hidden">
-      {/* Background Blur Shapes */}
-      <div className="absolute top-[-150px] left-[-150px] w-[400px] h-[400px] bg-white opacity-10 blur-[120px] rounded-full"></div>
-      <div className="absolute bottom-[-150px] right-[-150px] w-[400px] h-[400px] bg-white opacity-10 blur-[120px] rounded-full"></div>
-
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
       <div className="w-full max-w-md">
-        <h2 className="text-2xl font-medium text-center text-white mb-6">
+        <h2 className="text-3xl font-bold text-center text-white">
           Login Here
         </h2>
 
-        <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md border border-gray-200 relative z-10">
+        <div className="shadow-lg rounded-lg p-8 w-full max-w-md border-gray-200 relative z-10">
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -72,7 +68,7 @@ export default function Login() {
             )}
             {/* Username */}
             <div>
-              <label htmlFor="username" className="block text-sm font-bold text-gray-900 mb-2">
+              <label htmlFor="username" className="block text-sm font-bold mb-2">
                 <code>Username:</code>
               </label>
               <input
@@ -80,13 +76,13 @@ export default function Login() {
                 id="username"
                 name="username"
                 placeholder="Enter your username"
-                className="w-full px-4 py-2 border border-gray-300 text-gray-900 rounded-md focus:ring-2 focus:ring-blue-700 focus:outline-none"
+                className="w-full px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-700 focus:outline-none"
                 required
               />
             </div>
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-bold text-gray-900 mb-2">
+              <label htmlFor="password" className="block text-sm font-bold mb-2">
                 <code>Password:</code>
               </label>
               <input
@@ -94,7 +90,7 @@ export default function Login() {
                 id="password"
                 name="password"
                 placeholder="Enter your password"
-                className="w-full px-4 py-2 border border-gray-300 text-gray-900 rounded-md focus:ring-2 focus:ring-blue-700 focus:outline-none"
+                className="w-full px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-700 focus:outline-none"
                 required
               />
             </div>
@@ -103,7 +99,7 @@ export default function Login() {
             <div>
               <button
                 type="submit"
-                className="w-1/2 mx-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 block"
+                className="w-1/2 mx-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 mt-8 focus:outline-none focus:ring-2 focus:ring-blue-400 block"
               >
                 <code>Submit</code>
               </button>

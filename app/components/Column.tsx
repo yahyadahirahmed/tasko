@@ -19,11 +19,11 @@ export function Column({ title, tasks, state }: ColumnProps) {
   const sortedTasks = [...tasks].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 
   return (
-    <div className="bg-gray-100 p-4 rounded-lg w-80">
-      <h2 className="font-bold mb-4 text-black">{title}</h2>
+    <div className="bg-gray-100 p-4 rounded-lg w-80 bg-gray-900">
+      <h2 className="font-bold mb-4 text-white">{title}</h2>
       <div
         ref={setNodeRef}
-        className="min-h-[500px] max-h-[500px] overflow-y-auto bg-white rounded-lg shadow-inner p-2"
+        className="min-h-[500px] max-h-[500px] overflow-y-auto bg-kanban rounded-lg shadow-inner p-2 "
       >
         {sortedTasks.map(task => (
           <Task key={task.id} task={task} />
