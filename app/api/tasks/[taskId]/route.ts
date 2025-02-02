@@ -1,7 +1,6 @@
 import { prisma } from '@/app/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
-import { TaskState, TaskPriority } from '@/app/types';
-import { Task } from '@/app/components/Task';
+
 
 export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
   try {

@@ -64,7 +64,6 @@ export function KanbanBoard() {
   const todoTasks = tasks.filter(task => task.state === TaskState.ToDo);
   const inProgressTasks = tasks.filter(task => task.state === TaskState.InProgress);
   const completedTasks = tasks.filter(task => task.state === TaskState.Completed);
-  const approvedTasks = tasks.filter(task => task.state === TaskState.Approved);
 
 
   return (
