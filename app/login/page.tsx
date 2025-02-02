@@ -11,18 +11,22 @@ export default function Login() {
           <div className="text-9xl font-black text-center">
             TASKO
           </div>
-          <label 
-            htmlFor="my-drawer-4" 
-            className="drawer-button btn btn-primary"
-          >
-            Login Here!
-          </label>
-        </div>
-      </div>
-      <div className="drawer-side">
-        <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-        <div className="menu bg-base-100 text-base-content min-h-full w-full md:w-1/2 p-8">
-          <LoginForm/>
+          <code><p className="font-thin">A Task Management Tool</p></code>
+          {/* Open the modal using document.getElementById('ID').showModal() method */}
+<button className=" p-4 rounded-xl  hover:scale-105 font-bold bg-green-800 hover:bg-green-600" onClick={() => {
+  const modal = document.getElementById('my_modal_2') as HTMLDialogElement;
+  if (modal) {
+    modal.showModal();
+  }
+}}>Login Here!</button>
+<dialog id="my_modal_2" className="modal">
+  <div className="modal-box bg-base-300 border-2 border-gray-900 w-11/12 max-w-2xl">
+   <LoginForm/>
+  </div>
+  <form method="dialog" className="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
         </div>
       </div>
     </div>

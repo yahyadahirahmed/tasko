@@ -51,58 +51,55 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div className="w-full max-w-md">
-        <div className="shadow-lg rounded-lg p-8 w-full max-w-md border-gray-200 relative z-10">
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                {error}
-              </div>
-            )}
-            {/* Username */}
-            <div>
-              <label htmlFor="username" className="block text-sm font-bold mb-2">
-                <code>Username:</code>
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="Enter your username"
-                className="w-full px-4 py-2 focus:ring-2 focus:ring-blue-700 focus:outline-none"
-                required
-              />
-            </div>
-            {/* Password */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-bold mb-2">
-                <code>Password:</code>
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 focus:ring-2 focus:ring-blue-700 focus:outline-none"
-                required
-              />
-            </div>
-
-            {/* Button */}
-            <div>
-              <button
-                type="submit"
-                className="w-1/2 mx-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 mt-8 focus:outline-none focus:ring-2 focus:ring-blue-400 block"
-              >
-                <code>Submit</code>
-              </button>
-            </div>
-          </form>
+    <div className="flex items-center justify-center">
+  <div className="pb-6 w-full max-w-md rounded-lg">
+    <h2 className="text-3xl font-bold text-center text-white mb-8">Login</h2>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="alert alert-error text-white">
+          {error}
         </div>
+      )}
+      
+      <div className="form-control w-full">
+        <label className="label">
+          <code><span className="label-text text-white font-bold text-lg">Username:</span></code>
+        </label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Enter your username"
+          className="input input-bordered w-full bg-gray-800 text-white border-gray-600"
+          required
+        />
       </div>
-    </div>
+
+      <div className="form-control w-full">
+        <label className="label">
+        <code><span className=" label-text text-white font-bold text-lg">Password:</span></code>
+        </label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          className="input input-bordered w-full bg-gray-800 text-white border-gray-600"
+          required
+        />
+      </div>
+
+      <div className="form-control mt-6">
+        <button
+          type="submit"
+          className="btn mt-2 w-full bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4"
+        >
+          Login
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
   );
 }
