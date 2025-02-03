@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
-  const { data: session } = useSession();
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,8 +27,9 @@ export default function Login() {
         setError(`Authentication error: ${res.error}`);
       } else if (res?.ok) {
         // Use the session from useSession hook instead of getSession
-        if (session?.user?.userType) {
-          switch (session.user.userType) {
+        const updatedSession = await getSession();
+        if (updatedSession?.user?.userType) {
+          switch (updatedSession.user.userType) {
             case "ADMIN":
               router.push("/admin");
               break;
