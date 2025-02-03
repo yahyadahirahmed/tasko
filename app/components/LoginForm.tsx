@@ -6,7 +6,6 @@ import { useState } from "react";
 
 export default function Login() {
   const router = useRouter();
-  const { data: session } = useSession();
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
