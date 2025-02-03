@@ -7,7 +7,8 @@ export enum UserType {
 export enum TaskState {
   ToDo = 'ToDo',
   InProgress = 'InProgress',
-  Completed = 'Completed'
+  Completed = 'Completed',
+  Approved = 'Approved'
 }
 
 export enum TaskPriority {

@@ -20,6 +20,7 @@ enum TaskState {
   ToDo
   InProgress
   Completed
+  Approved
 }
 
 enum TaskPriority {
@@ -53,4 +54,5 @@ model User {
   team          User[]   @relation("UserToManager") // Users managed by this user
   tasksCreated  Task[]   @relation("TaskCreator")
   tasksAssigned Task[]   @relation("TaskAssignee")
+  rewardPoints  Int      @default(0) // Added rewardPoints field
 }
