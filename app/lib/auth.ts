@@ -6,6 +6,7 @@ import { UserType } from "@/app/types";
 import { JWT } from "next-auth/jwt";
 import { Session, DefaultSession } from "next-auth";
 import { SessionStrategy } from "next-auth";
+import { Account, Profile } from "next-auth";
 
 const prisma = new PrismaClient();
 
@@ -79,14 +80,32 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: JWTUser }) {
+    async jwt({ 
+      token, 
+      user, 
+      account, 
+      profile, 
+      trigger 
+    }: { 
+      token: JWT; 
+      user: any; 
+      account: Account | null; 
+      profile?: Profile; 
+      trigger?: string;
+    }) {
       if (user) {
-        token.userType = user.userType;
-        token.username = user.username;
+        token.userType = (user as JWTUser).userType;
+        token.username = (user as JWTUser).username;
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ 
+      session, 
+      token 
+    }: { 
+      session: Session; 
+      token: JWT;
+    }) {
       if (session.user) {
         session.user.userType = token.userType;
         session.user.username = token.username;
