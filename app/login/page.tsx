@@ -8,7 +8,7 @@ export default function Login() {
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content relative min-h-screen bg-base-200">
         <div className="flex flex-col items-center justify-center min-h-screen gap-8">
-          <div className="text-9xl text-gray-400 font-black text-center">
+          <div className="text-9xl text-gray-200 font-black text-center">
             TASKO
           </div>
           <code><p className="font-thin text-gray-400">A Task Management Tool</p></code>

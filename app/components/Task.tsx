@@ -35,7 +35,7 @@ export function Task({ task }: TaskProps) {
       }}
       {...listeners}
       {...attributes}
-      className={`text-base-content font-bold p-4 mb-2 rounded-lg shadow-md hover:shadow-lg border-2 ${borderColor} cursor-move`}
+      className={`text-white bg-base-100 font-bold p-4 mb-2 rounded-lg shadow-md hover:shadow-lg border-2 ${borderColor} cursor-move`}
     >
       {task.text}
     </div>

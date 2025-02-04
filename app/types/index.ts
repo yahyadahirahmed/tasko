@@ -41,6 +41,7 @@ export interface User {
   createdAt: Date;
   userType: UserType;
   managerId?: string | null;
+  rewardPoints: number;
   
   // Relations (optional - include if you need them in the UI)
   manager?: User | null;
