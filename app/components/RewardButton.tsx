@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 
 export default function RewardButton() {
     const { status } = useSession();
-    const router = useRouter();
     const [userData, setUserData] = useState({ rewardPoints: 0, username: '' });
 
     useEffect(() => {

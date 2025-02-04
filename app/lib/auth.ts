@@ -9,10 +9,18 @@ import { SessionStrategy } from "next-auth";
 
 const prisma = new PrismaClient();
 
+// Add JWTUser interface
+interface JWTUser {
+  id: string;
+  username: string;
+  email: string;
+  userType: UserType;
+}
+
 declare module "next-auth" {
   interface Session {
     user: {
-      userType: string;
+      userType: UserType;
       username: string;
     } & DefaultSession["user"]
   }
@@ -20,7 +28,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    userType: string;
+    userType: UserType;
     username: string;
   }
 }
@@ -34,7 +42,7 @@ export const authOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<JWTUser | null> {
         try {
           if (!credentials?.username || !credentials?.password) {
             return null;
@@ -71,7 +79,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user: any }) {
+    async jwt({ token, user }: { token: JWT; user?: JWTUser }) {
       if (user) {
         token.userType = user.userType;
         token.username = user.username;
@@ -94,4 +102,4 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60,
   },
   debug: process.env.NODE_ENV === "development",
-}; 
+};

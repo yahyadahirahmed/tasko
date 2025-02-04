@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import KanbanBoard from '../components/KanbanBoard';
 import LogoutButton from '../components/LogoutButton';
 import AccountButton from '../components/AccountButton';
