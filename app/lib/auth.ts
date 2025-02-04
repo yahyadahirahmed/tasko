@@ -2,13 +2,13 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { User, UserType } from "@/app/types";
+import { UserType } from "@/app/types";
 import { JWT } from "next-auth/jwt";
 import { Session, DefaultSession } from "next-auth";
 import { SessionStrategy } from "next-auth";
-
+import { User as PrismaUser } from "@prisma/client";
+import { Account, Profile, User as NextAuthUser } from "next-auth";
 const prisma = new PrismaClient();
-
 declare module "next-auth" {
   interface Session {
     user: {
@@ -17,14 +17,12 @@ declare module "next-auth" {
     } & DefaultSession["user"]
   }
 }
-
 declare module "next-auth/jwt" {
   interface JWT {
     userType: string;
     username: string;
   }
 }
-
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -39,24 +37,19 @@ export const authOptions = {
           if (!credentials?.username || !credentials?.password) {
             return null;
           }
-
           const user = await prisma.user.findUnique({
             where: { username: credentials.username },
           });
-
           if (!user) {
             return null;
           }
-
           const isValid = await bcrypt.compare(
             credentials.password,
             user.password
           );
-
           if (!isValid) {
             return null;
           }
-
           return {
             id: user.id,
             username: user.username,
@@ -71,10 +64,19 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user: User }) {
+    async jwt({ 
+      token, 
+      user
+    }: { 
+      token: JWT; 
+      user: PrismaUser | NextAuthUser | null; 
+      account: Account | null;
+      profile?: Profile;
+      trigger?: "signIn" | "signUp" | "update";
+    }) {
       if (user) {
-        token.userType = user.userType;
-        token.username = user.username;
+        token.userType = (user as PrismaUser).userType;
+        token.username = (user as PrismaUser).username;
       }
       return token;
     },
