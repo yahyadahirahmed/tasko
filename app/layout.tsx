@@ -27,7 +27,7 @@ export default async function RootLayout({
 }) {
   // Don't check for session here - let the middleware handle protection
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="dim">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>
