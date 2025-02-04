@@ -2,26 +2,17 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { UserType } from "@/app/types";
+import { User, UserType } from "@/app/types";
 import { JWT } from "next-auth/jwt";
 import { Session, DefaultSession } from "next-auth";
 import { SessionStrategy } from "next-auth";
-import { Account, Profile } from "next-auth";
 
 const prisma = new PrismaClient();
-
-// Add JWTUser interface
-interface JWTUser {
-  id: string;
-  username: string;
-  email: string;
-  userType: UserType;
-}
 
 declare module "next-auth" {
   interface Session {
     user: {
-      userType: UserType;
+      userType: string;
       username: string;
     } & DefaultSession["user"]
   }
@@ -29,7 +20,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    userType: UserType;
+    userType: string;
     username: string;
   }
 }
@@ -43,7 +34,7 @@ export const authOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<JWTUser | null> {
+      async authorize(credentials) {
         try {
           if (!credentials?.username || !credentials?.password) {
             return null;
@@ -80,32 +71,14 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ 
-      token, 
-      user, 
-      account, 
-      profile, 
-      trigger 
-    }: { 
-      token: JWT; 
-      user: any; 
-      account: Account | null; 
-      profile?: Profile; 
-      trigger?: string;
-    }) {
+    async jwt({ token, user }: { token: JWT; user: User }) {
       if (user) {
-        token.userType = (user as JWTUser).userType;
-        token.username = (user as JWTUser).username;
+        token.userType = user.userType;
+        token.username = user.username;
       }
       return token;
     },
-    async session({ 
-      session, 
-      token 
-    }: { 
-      session: Session; 
-      token: JWT;
-    }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
         session.user.userType = token.userType;
         session.user.username = token.username;
@@ -121,4 +94,4 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60,
   },
   debug: process.env.NODE_ENV === "development",
-};
+}; 
