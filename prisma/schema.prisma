@@ -55,4 +55,39 @@ model User {
   tasksCreated  Task[]   @relation("TaskCreator")
   tasksAssigned Task[]   @relation("TaskAssignee")
   rewardPoints  Int      @default(0) // Added rewardPoints field
+
+  // A user can manage multiple teams
+  managedTeams Team[] @relation("ManagerToTeams")
+
+  // A user can be a member of multiple teams
+  teamMemberships TeamMember[]
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  // The manager who created this team
+  managerId String
+  manager   User   @relation("ManagerToTeams", fields: [managerId], references: [id])
+
+  // Team members (via the join table)
+  members TeamMember[]
+}
+
+model TeamMember {
+  id String @id @default(cuid())
+
+  // User who is a member of a team
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // The team they belong to
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, teamId]) // Ensures a user can't be added to the same team twice
 }

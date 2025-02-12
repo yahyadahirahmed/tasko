@@ -37,7 +37,7 @@ export default function Login() {
               router.push("/manager");
               break;
             case "TEAM_MEMBER":
-              router.push("/member");
+              router.push("/Dashboard");
               break;
             default:
               router.push("/");
