@@ -78,8 +78,7 @@ model Team {
 
   // Team members (via the join table)
   members TeamMember[]
-
-  Task Task[]
+  Task    Task[]
 }
 
 model TeamMember {
