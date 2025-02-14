@@ -1,5 +1,7 @@
 import { prisma } from '@/app/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
+import { pusherServer } from '@/app/lib/pusher';
+import exp from 'constants';
 
 
 export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
@@ -54,9 +56,84 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
       },
     });
 
+    // Trigger Pusher event with the updated task
+    await pusherServer.trigger('tasks', 'task-updated', updatedTask);
+
     return NextResponse.json(updatedTask);
   } catch (error) {
-    console.error('Error details:', error);
-    return NextResponse.json({ error: 'Failed to update task', details: error }, { status: 500 });
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Failed to update task' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
+  try {
+    const { taskId } = await params;
+
+    // Delete the task
+    await prisma.task.delete({
+      where: { id: taskId }
+    });
+
+    // Trigger Pusher event with the deleted task ID
+    await pusherServer.trigger('tasks', 'task-deleted', taskId);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
+  }
+}
+
+export async function GET(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
+  try {
+    const { taskId } = await params;
+
+    // Fetch the task
+    const task = await prisma.task.findUnique({
+      where: { id: taskId }
+    });
+
+    if (!task) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(task);
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch task' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { text, state, priority, assignedToId, createdById, deadline } = await request.json();
+
+    // Validate required fields
+    if (!text || !state || !createdById) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Create the new task
+    const newTask = await prisma.task.create({
+      data: {
+        text,
+        state,
+        priority,
+        assignedToId,
+        createdById,
+        deadline,
+      },
+    });
+
+    // Trigger Pusher event with the new task
+    await pusherServer.trigger('tasks', 'task-created', newTask);
+
+    return NextResponse.json(newTask, { status: 201 });
+  } catch (error) {
+    console.error('Error creating task:', error);
+    return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
+  }
+}
+
+
