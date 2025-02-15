@@ -1,30 +1,35 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { TaskPriority } from '@prisma/client';
+import { TaskState } from '@/app/types';
 
-interface Manager {
+interface Member {
   id: string;
   username: string;
 }
 
-export default function AddTaskForm() {
-    const [managers, setManagers] = useState<Manager[]>([]);
-    const [selectedManager, setSelectedManager] = useState<string>('');
+export default function AddTaskForm({ teamId }: { teamId: string }) {
+    const [members, setMembers] = useState<Member[]>([]);
+    const [selectedMember, setSelectedMember] = useState<string>('');
+    const [priority, setPriority] = useState<TaskPriority>(TaskPriority.medium);
+    const [deadline, setDeadline] = useState<string>('');
 
     useEffect(() => {
-        // Fetch managers when component mounts
-        const fetchManagers = async () => {
+        const fetchTeamMembers = async () => {
             try {
-                const response = await fetch('/api/users/managers');
-                if (!response.ok) throw new Error('Failed to fetch managers');
+                const response = await fetch(`/api/teams/${teamId}/members`);
+                if (!response.ok) throw new Error('Failed to fetch team members');
                 const data = await response.json();
-                setManagers(data);
+                setMembers(data);
             } catch (error) {
-                console.error('Error fetching managers:', error);
+                console.error('Error fetching team members:', error);
             }
         };
 
-        fetchManagers();
-    }, []);
+        if (teamId) {
+            fetchTeamMembers();
+        }
+    }, [teamId]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -33,28 +38,34 @@ export default function AddTaskForm() {
         try {
             const response = await fetch('/api/tasks', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     text: formData.get('text'),
-                    assignedToId: selectedManager,
-                    state: 'ToDo',  // Default state for new tasks
-                    priority: 'medium'  // Default priority
+                    assignedToId: selectedMember,
+                    state: TaskState.ToDo,
+                    priority: priority,
+                    teamId: teamId,
+                    deadline: new Date(deadline).toISOString(),
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to create task');
-            }
+            if (!response.ok) throw new Error('Failed to create task');
 
-            // Close modal and reset form
-            const modal = document.getElementById('my_modal_3') as HTMLDialogElement;
+            // Reset form state first
+            setSelectedMember('');
+            setPriority(TaskPriority.medium);
+            setDeadline('');
+            
+            // Then close modal and reset form
+                       const modal = document.getElementById('my_modal_3') as HTMLDialogElement | null;
             if (modal) {
-                modal.close();
+              modal.close();
+              const form = e.currentTarget as HTMLFormElement | null;
+              if (form) {
+                form.reset();
+              }
+              window.location.reload();
             }
-            e.currentTarget.reset();
-            setSelectedManager('');
         } catch (error) {
             console.error('Error creating task:', error);
         }
@@ -64,13 +75,13 @@ export default function AddTaskForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="form-control w-full">
                 <label className="label">
-                    <code><span className="label-text text-white font-bold text-lg">Text:</span></code>
+                    <code><span className="label-text text-white font-bold text-lg">Task Description:</span></code>
                 </label>
                 <input
                     type="text"
                     id="task-text"
                     name="text"
-                    placeholder="Task text here"
+                    placeholder="Task description here"
                     className="input input-bordered w-full bg-gray-800 text-white border-gray-600"
                     required
                 />
@@ -78,21 +89,50 @@ export default function AddTaskForm() {
 
             <div className="form-control w-full">
                 <label className="label">
-                    <code><span className="label-text text-white font-bold text-lg">Assigned To:</span></code>
+                    <code><span className="label-text text-white font-bold text-lg">Assign To:</span></code>
                 </label>
                 <select 
                     className="select select-bordered w-full bg-gray-800 text-white"
-                    value={selectedManager}
-                    onChange={(e) => setSelectedManager(e.target.value)}
+                    value={selectedMember}
+                    onChange={(e) => setSelectedMember(e.target.value)}
                     required
                 >
-                    <option value="">Select a manager</option>
-                    {managers.map((manager) => (
-                        <option key={manager.id} value={manager.id}>
-                            {manager.username}
+                    <option value="">Select a member</option>
+                    {members.map((member) => (
+                        <option key={member.id} value={member.id}>
+                            {member.username}
                         </option>
                     ))}
                 </select>
+            </div>
+
+            <div className="form-control w-full">
+                <label className="label">
+                    <code><span className="label-text text-white font-bold text-lg">Priority:</span></code>
+                </label>
+                <select
+                    className="select select-bordered w-full bg-gray-800 text-white"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as TaskPriority)}
+                    required
+                >
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <div className="form-control w-full">
+                <label className="label">
+                    <code><span className="label-text text-white font-bold text-lg">Deadline:</span></code>
+                </label>
+                <input
+                    type="datetime-local"
+                    className="input input-bordered w-full bg-gray-800 text-white border-gray-600"
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
+                    required
+                />
             </div>
 
             <div className="form-control mt-6">

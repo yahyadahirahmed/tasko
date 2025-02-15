@@ -1,7 +1,7 @@
 import { prisma } from '@/app/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
 import { pusherServer } from '@/app/lib/pusher';
-import exp from 'constants';
+
 
 
 export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
@@ -85,32 +85,13 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
   }
 }
 
-export async function GET(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
-  try {
-    const { taskId } = await params;
-
-    // Fetch the task
-    const task = await prisma.task.findUnique({
-      where: { id: taskId }
-    });
-
-    if (!task) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(task);
-  } catch (error) {
-    console.error('Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch task' }, { status: 500 });
-  }
-}
 
 export async function POST(request: NextRequest) {
   try {
-    const { text, state, priority, assignedToId, createdById, deadline } = await request.json();
+    const { text, state, priority, assignedToId, createdById, deadline, teamId } = await request.json();
 
     // Validate required fields
-    if (!text || !state || !createdById) {
+    if (!text || !state || !createdById || !teamId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -123,6 +104,7 @@ export async function POST(request: NextRequest) {
         assignedToId,
         createdById,
         deadline,
+        teamId
       },
     });
 

@@ -2,8 +2,11 @@
 import React from 'react'
 import AddTaskForm from './AddTaskForm';
 
+interface Props {
+  teamId: string;
+}
 
-export default function AddTaskButton() {
+export default function AddTaskButton({ teamId }: Props) {
   return (
     <>
         <button className="btn" onClick={()=> {
@@ -15,7 +18,7 @@ export default function AddTaskButton() {
         
         <dialog id="my_modal_3" className="modal">
           <div className="modal-box">
-            <AddTaskForm />
+            <AddTaskForm teamId={teamId} />
           </div>
           <form method="dialog" className="modal-backdrop">
             <button>close</button>

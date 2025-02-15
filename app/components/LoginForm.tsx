@@ -31,10 +31,10 @@ export default function Login() {
         if (updatedSession?.user?.userType) {
           switch (updatedSession.user.userType) {
             case "ADMIN":
-              router.push("/admin");
+              router.push("/mDashboard");
               break;
             case "TEAM_MANAGER":
-              router.push("/manager");
+              router.push("/mDashboard");
               break;
             case "TEAM_MEMBER":
               router.push("/Dashboard");

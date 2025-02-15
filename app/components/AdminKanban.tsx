@@ -6,13 +6,17 @@ import { Task } from './Task';
 import  AddTaskButton  from './AddTaskButton';
 import { pusherClient } from '@/app/lib/pusher';
 
-export function KanbanBoard() {
+interface Props {
+  teamId: string;
+}
+
+export function KanbanBoard({ teamId }: Props) {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const response = await fetch('/api');
+      const response = await fetch(`/api/teams/${teamId}/tasks`);
       if (!response.ok) {
         console.error('Failed to fetch tasks:', response.statusText);
         return;
@@ -41,7 +45,7 @@ export function KanbanBoard() {
       channel.unbind_all();
       pusherClient.unsubscribe('tasks');
     };
-  }, []);
+  }, [teamId]);
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = tasks.find(task => task.id === event.active.id);
@@ -102,7 +106,7 @@ export function KanbanBoard() {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 
-        <AddTaskButton />
+        <AddTaskButton teamId={teamId} />
       <div className="p-4 gap-4 mt-12 outer flex justify-center items-center">
         <Column title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
         <Column title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />

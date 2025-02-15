@@ -4,21 +4,25 @@ import { Column } from './Column';
 import { Task as TaskType, TaskState } from '../types';
 import { Task } from './Task';
 
-export function KanbanBoard() {
+interface Props {
+  teamId: string;
+}
+export function KanbanBoard({teamId}: Props) {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
 
   React.useEffect(() => {
     const fetchTasks = async () => {
-      const response = await fetch('/api');
+      const response = await fetch(`/api/teams/${teamId}/tasks`);
       if (!response.ok) {
         console.error('Failed to fetch tasks:', response.statusText);
         return;
       }
       const data = await response.json();
       setTasks(data);
-      console.log(data)
     };
+
+    // Initial fetch
     fetchTasks();
   }, []);
 

@@ -18,7 +18,7 @@ export default function Admin() {
           </div>
         </div>
       </div>
-      <AdminKanban />
+      <AdminKanban teamId={''} />
     </div>
   );
 }

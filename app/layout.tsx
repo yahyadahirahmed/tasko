@@ -18,6 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "tasko",
   description: "A simple task management app",
+  icons: { icon: "/public/window.svg"}
 };
 
 export default async function RootLayout({

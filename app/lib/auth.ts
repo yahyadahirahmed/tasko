@@ -12,6 +12,7 @@ const prisma = new PrismaClient();
 declare module "next-auth" {
   interface Session {
     user: {
+      id: string;
       userType: string;
       username: string;
     } & DefaultSession["user"]
@@ -19,6 +20,7 @@ declare module "next-auth" {
 }
 declare module "next-auth/jwt" {
   interface JWT {
+    id: string;
     userType: string;
     username: string;
   }
@@ -75,6 +77,7 @@ export const authOptions = {
       trigger?: "signIn" | "signUp" | "update";
     }) {
       if (user) {
+        token.id = (user as PrismaUser).id;
         token.userType = (user as PrismaUser).userType;
         token.username = (user as PrismaUser).username;
       }
@@ -82,6 +85,7 @@ export const authOptions = {
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
+        session.user.id = token.id;
         session.user.userType = token.userType;
         session.user.username = token.username;
       }
