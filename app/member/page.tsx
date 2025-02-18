@@ -33,7 +33,7 @@ export default function MemberPage() {
           </div>
         </div>
       </div>
-      <KanbanBoard />
+      <KanbanBoard teamId={''} />
     </div>
   );
 }
