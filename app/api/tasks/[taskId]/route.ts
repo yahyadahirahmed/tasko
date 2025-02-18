@@ -68,6 +68,9 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
 
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
   try {
+   // filler to free up for deployment
+  const filler = await request.json();
+  console.log(filler);
     const { taskId } = await params;
 
     // Delete the task

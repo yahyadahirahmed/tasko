@@ -12,6 +12,9 @@ export async function GET(
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+// filler to free up for deployment
+  const filler = await request.json();
+    console.log(filler);
 
   const teamMembers = await prisma.teamMember.findMany({
     where: { teamId },
