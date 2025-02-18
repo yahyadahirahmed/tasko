@@ -5,32 +5,31 @@ import { authOptions } from '@/app/lib/auth';
 
 export async function GET(
   request: Request,
-  { params }: { params: { teamId: string } }
+  { params }: { params: Promise<{ teamId: string }> }
 ) {
+  const { teamId } = await params; // await params before using its properties
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const teamMembers = await prisma.teamMember.findMany({
-    where: {
-      teamId: params.teamId
-    },
+    where: { teamId },
     include: {
       user: {
         select: {
           id: true,
-          username: true
-        }
-      }
-    }
+          username: true,
+        },
+      },
+    },
   });
 
   // Transform the data to match the Member interface
   const members = teamMembers.map(tm => ({
     id: tm.user.id,
-    username: tm.user.username
+    username: tm.user.username,
   }));
 
   return NextResponse.json(members);
-} 
+}

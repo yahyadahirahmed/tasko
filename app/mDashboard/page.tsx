@@ -13,7 +13,7 @@ interface Team {
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([]);
-  const { data: session } = useSession();
+  
 
   useEffect(() => {
     const fetchTeams = async () => {

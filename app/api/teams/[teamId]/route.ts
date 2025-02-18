@@ -5,8 +5,11 @@ import { authOptions } from '@/app/lib/auth';
 
 export async function GET(
   request: Request,
-  { params }: { params: { teamId: string } }
+  { params }: { params: Promise<{ teamId: string }> }
 ) {
+  // Await the params promise to get actual values
+  const { teamId } = await params;
+
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -14,7 +17,7 @@ export async function GET(
 
   const team = await prisma.team.findUnique({
     where: {
-      id: params.teamId,
+      id: teamId, // use the awaited teamId here
     },
     include: {
       members: {
@@ -26,9 +29,9 @@ export async function GET(
             },
           },
         },
-      }
+      },
     },
   });
 
   return NextResponse.json(team);
-} 
+}
