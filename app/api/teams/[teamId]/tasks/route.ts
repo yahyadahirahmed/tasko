@@ -3,17 +3,17 @@ import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 import { authOptions } from '@/app/lib/auth';
 
-export async function GET(request: Request, context: { params: { teamId: string } }) {
-  // filler to free up for deployment
-  const filler = await request.json();
-  console.log(filler);
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ teamId: string }> }
+) {
+  const { teamId } = await params; // await params before using its properties
   
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  const { teamId } = context.params;
   
   const tasks = await prisma.task.findMany({
     where: { teamId },
