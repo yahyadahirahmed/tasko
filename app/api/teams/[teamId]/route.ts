@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { authOptions } from '@/app/lib/auth';
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ teamId: string }> }
 ) {
   // Await the params promise to get actual values

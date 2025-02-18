@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { authOptions } from '@/app/lib/auth';
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { teamId: string } }
 ) {
   const session = await getServerSession(authOptions);
