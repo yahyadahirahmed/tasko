@@ -24,7 +24,7 @@ export function KanbanBoard({teamId}: Props) {
 
     // Initial fetch
     fetchTasks();
-  }, []);
+  }, [teamId]);
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = tasks.find(task => task.id === event.active.id);
