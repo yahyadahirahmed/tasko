@@ -3,24 +3,50 @@ import React, { useState } from 'react';
 import { Column } from './Column';
 import { Task as TaskType, TaskState } from '../types';
 import { Task } from './Task';
+import { pusherClient } from '@/app/lib/pusher';
 
-export function KanbanBoard() {
+interface Props {
+  teamId: string;
+}
+export function KanbanBoard({teamId}: Props) {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
 
   React.useEffect(() => {
     const fetchTasks = async () => {
-      const response = await fetch('/api');
+      const response = await fetch(`/api/teams/${teamId}/tasks`);
       if (!response.ok) {
         console.error('Failed to fetch tasks:', response.statusText);
         return;
       }
       const data = await response.json();
       setTasks(data);
-      console.log(data)
     };
+
+    // Initial fetch
     fetchTasks();
-  }, []);
+    
+     // Subscribe to Pusher channel
+        const channel = pusherClient.subscribe('tasks');
+    
+        // Listen for task updates
+        channel.bind('task-updated', (updatedTask: TaskType) => {
+          setTasks(currentTasks =>
+            currentTasks.map(task =>
+              task.id === updatedTask.id ? updatedTask : task
+            )
+          );
+        });
+    
+        // Cleanup on unmount
+        return () => {
+          channel.unbind_all();
+          pusherClient.unsubscribe('tasks');
+        };
+
+  }, [teamId]);
+
+  
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = tasks.find(task => task.id === event.active.id);
