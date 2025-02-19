@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Column } from './Column';
 import { Task as TaskType, TaskState } from '../types';
 import { Task } from './Task';
-import  AddTaskButton  from './AddTaskButton';
 import { pusherClient } from '@/app/lib/pusher';
 
 interface Props {
@@ -105,7 +104,7 @@ export function KanbanBoard({ teamId }: Props) {
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      
+
       <div className="p-4 gap-4 mt-12 outer flex justify-center items-center">
         <Column title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
         <Column title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />
