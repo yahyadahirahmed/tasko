@@ -105,8 +105,7 @@ export function KanbanBoard({ teamId }: Props) {
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-
-        <AddTaskButton teamId={teamId} />
+      
       <div className="p-4 gap-4 mt-12 outer flex justify-center items-center">
         <Column title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
         <Column title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />

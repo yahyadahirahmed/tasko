@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import KanbanBoard from '@/app/components/KanbanBoard';
 import RewardButton from '@/app/components/RewardButton';
-import AddTaskButton from '@/app/components/AddTaskButton';
 import LogoutButton from '@/app/components/LogoutButton';
 
 interface Team {
@@ -41,7 +40,6 @@ export default function TeamBoard() {
           <h1 className="text-2xl font-bold px-4">{team?.name} Board</h1>
         </div>
         <div className="flex-none px-4">
-          <AddTaskButton teamId={teamId} />
           <RewardButton />
           <LogoutButton />
         </div>

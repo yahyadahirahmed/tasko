@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Column } from './Column';
 import { Task as TaskType, TaskState } from '../types';
 import { Task } from './Task';
+import { pusherClient } from '@/app/lib/pusher';
 
 interface Props {
   teamId: string;
@@ -24,7 +25,28 @@ export function KanbanBoard({teamId}: Props) {
 
     // Initial fetch
     fetchTasks();
+    
+     // Subscribe to Pusher channel
+        const channel = pusherClient.subscribe('tasks');
+    
+        // Listen for task updates
+        channel.bind('task-updated', (updatedTask: TaskType) => {
+          setTasks(currentTasks =>
+            currentTasks.map(task =>
+              task.id === updatedTask.id ? updatedTask : task
+            )
+          );
+        });
+    
+        // Cleanup on unmount
+        return () => {
+          channel.unbind_all();
+          pusherClient.unsubscribe('tasks');
+        };
+
   }, [teamId]);
+
+  
 
   const handleDragStart = (event: DragStartEvent) => {
     const task = tasks.find(task => task.id === event.active.id);

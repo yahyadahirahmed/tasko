@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import LogoutButton from '../components/LogoutButton';
+import RewardButton from '../components/RewardButton';
 
 
 interface Team {
@@ -30,6 +31,7 @@ export default function TeamsPage() {
     <div className="min-h-screen bg-base-200 p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">My Teams</h1>
+        <RewardButton />
         <LogoutButton />
       </div>
       
