@@ -43,6 +43,9 @@ export function Task({ task }: TaskProps) {
     >
       {task.text}
     </div>
+    <div >
+     <Dropdown  taskId = {task.id}/>
+    </div>
     </div>
     </>
   );

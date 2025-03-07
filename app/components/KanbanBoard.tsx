@@ -37,6 +37,18 @@ export function KanbanBoard({teamId}: Props) {
             )
           );
         });
+
+    // Listen for task deletions
+      channel.bind('task-deleted', (taskId: string) => {
+        setTasks(currentTasks => 
+          currentTasks.filter(task => task.id !== taskId)
+        );
+      });
+
+      // Listen for new tasks
+channel.bind('task-created', (newTask: TaskType) => {
+  setTasks(currentTasks => [...currentTasks, newTask]);
+});
     
         // Cleanup on unmount
         return () => {

@@ -1,6 +1,6 @@
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
 import React, { useState, useEffect } from 'react';
-import { Column } from './Column';
+import AdminColumn  from './AdminColumn';
 import { Task as TaskType, TaskState } from '../types';
 import { Task } from './Task';
 import { pusherClient } from '@/app/lib/pusher';
@@ -39,6 +39,18 @@ export function KanbanBoard({ teamId }: Props) {
       );
     });
 
+    // Listen for task deletions
+    channel.bind('task-deleted', (taskId: string) => {
+      setTasks(currentTasks => 
+        currentTasks.filter(task => task.id !== taskId)
+      );
+    });
+
+    // Listen for new tasks
+channel.bind('task-created', (newTask: TaskType) => {
+  setTasks(currentTasks => [...currentTasks, newTask]);
+});
+    
     // Cleanup on unmount
     return () => {
       channel.unbind_all();
@@ -106,10 +118,10 @@ export function KanbanBoard({ teamId }: Props) {
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 
       <div className="p-4 gap-4 mt-12 outer flex justify-center items-center">
-        <Column title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
-        <Column title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />
-        <Column title="Completed" tasks={completedTasks} state={TaskState.Completed} />
-        <Column title="Approved" tasks={ApprovedTasks} state={TaskState.Approved} />
+        <AdminColumn title="To Do" tasks={todoTasks} state={TaskState.ToDo} />
+        <AdminColumn title="In Progress" tasks={inProgressTasks} state={TaskState.InProgress} />
+        <AdminColumn title="Completed" tasks={completedTasks} state={TaskState.Completed} />
+        <AdminColumn title="Approved" tasks={ApprovedTasks} state={TaskState.Approved} />
       </div>
       <DragOverlay>
         {activeTask ? <Task task={activeTask} /> : null}
