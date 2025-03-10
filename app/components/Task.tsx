@@ -23,10 +23,10 @@ export function Task({ task }: TaskProps) {
   // Determine border color based on priority
   const borderColor =
     task.priority === 'high'
-      ? 'border-red-500'
+      ? 'border-red-500 border-8'
       : task.priority === 'medium'
-      ? 'border-orange-500'
-      : 'border-green-500';
+      ? 'border-orange-500 border-4'
+      : 'border-green-500 border-2';
 
   return (
     <>
@@ -39,7 +39,7 @@ export function Task({ task }: TaskProps) {
       }}
       {...listeners}
       {...attributes}
-      className={`text-white w-full bg-base-100 font-bold p-4 mb-2 rounded-lg shadow-md hover:shadow-lg border-2 ${borderColor} cursor-move flex justify-between`}
+      className={`text-white w-full bg-base-100 font-bold p-4 mb-2 rounded-lg shadow-md hover:shadow-lg  ${borderColor} cursor-move flex justify-between`}
     >
       {task.text}
     </div>

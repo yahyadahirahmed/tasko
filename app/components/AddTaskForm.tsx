@@ -57,7 +57,7 @@ export default function AddTaskForm({ teamId }: { teamId: string }) {
             setDeadline('');
             
             // Then close modal and reset form
-                       const modal = document.getElementById('my_modal_3') as HTMLDialogElement | null;
+            const modal = document.getElementById('my_modal_3') as HTMLDialogElement | null;
             if (modal) {
               modal.close();
               const form = e.currentTarget as HTMLFormElement | null;
