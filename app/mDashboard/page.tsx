@@ -4,7 +4,7 @@ import CreateTeamButton from '../components/CreateTeamButton';
 import LogoutButton from '../components/LogoutButton';
 import { useSession } from 'next-auth/react';
 import AccountDetailButton from '../components/AccountDetailButton';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface Team {
   id: string;
@@ -12,12 +12,12 @@ interface Team {
   createdAt: Date;
   members: { user: { username: string } }[];
 }
-
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const { data: session, status } = useSession();
   const router = useRouter();
-
+  const pathname = usePathname(); // Use the pathname hook
+  
   useEffect(() => {
     // Redirect if not authenticated
     if (status === 'unauthenticated') {
@@ -29,10 +29,20 @@ export default function TeamsPage() {
     if (status === 'authenticated') {
       const fetchTeams = async () => {
         try {
-          const response = await fetch('/api/teams');
+          // Determine which API endpoint to use based on the current path
+          const isManagerDashboard = pathname?.includes('mDashboard');
+          const apiUrl = isManagerDashboard 
+            ? '/api/teams' 
+            : '/api/teams/memberTeamFind';
+          
+          // Add cache-busting parameter
+          const response = await fetch(`${apiUrl}?_=${new Date().getTime()}`);
+          
           if (response.ok) {
             const data = await response.json();
             setTeams(data);
+          } else {
+            console.error('Error fetching teams:', response.statusText);
           }
         } catch (error) {
           console.error('Error fetching teams:', error);
@@ -40,13 +50,20 @@ export default function TeamsPage() {
       };
 
       fetchTeams();
+      
+      // For App Router, we can use the following approach for navigation events
+      // Note: App Router doesn't have the same event system as Pages Router
+      // This is a simpler approach that refreshes on component mount/remount
+      
+      // Optionally, you can set up an interval to periodically refresh the teams list
+      // This is one way to handle navigation in App Router since it lacks direct route events
+      const refreshInterval = setInterval(fetchTeams, 30000); // Every 30 seconds
+      
+      return () => {
+        clearInterval(refreshInterval);
+      };
     }
-  }, [status, router]);
-
-  // Show loading state while checking authentication
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+  }, [status, router, pathname]); // Add pathname to dependencies
 
   return (
     <div className="min-h-screen bg-base-200 p-6">

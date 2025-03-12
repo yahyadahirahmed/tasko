@@ -5,13 +5,14 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/auth'; 
 import { TaskState, TaskPriority } from '@prisma/client';
 
-// Fix: Correct type for context parameter in GET
+// Updated for Next.js 15: params is now a Promise
 export async function GET(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    const { taskId } = params;
+    const resolvedParams = await params;
+    const { taskId } = resolvedParams;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
@@ -57,13 +58,14 @@ interface TaskUpdateData {
   assignedToId?: string | null;
 }
 
-// Fix: Also update PATCH and DELETE functions to use the same pattern
+// Updated for Next.js 15: params is now a Promise
 export async function PATCH(
   request: NextRequest, 
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    const { taskId } = params;
+    const resolvedParams = await params;
+    const { taskId } = resolvedParams;
     const { state, priority, text, assignedToId } = await request.json();
 
     // First fetch the existing task
@@ -155,12 +157,14 @@ export async function PATCH(
   }
 }
 
+// Updated for Next.js 15: params is now a Promise
 export async function DELETE(
   request: NextRequest, 
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
-    const { taskId } = params;
+    const resolvedParams = await params;
+    const { taskId } = resolvedParams;
 
     // Delete the task
     await prisma.task.delete({
