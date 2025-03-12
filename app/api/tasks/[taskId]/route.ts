@@ -8,10 +8,10 @@ import { TaskState, TaskPriority } from '@prisma/client';
 // Add this GET handler
 export async function GET(
   request: NextRequest,
-  { params }: { params: { taskId: string } }
+  context: { params: { taskId: string } }
 ) {
   try {
-    const { taskId } = await params;
+    const { taskId } = context.params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
