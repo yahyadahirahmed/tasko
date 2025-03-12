@@ -1,25 +1,98 @@
 import { prisma } from '@/app/lib/prisma';
 import { NextResponse, NextRequest } from 'next/server';
 import { pusherServer } from '@/app/lib/pusher';
+import { getServerSession } from 'next-auth'; 
+import { authOptions } from '@/app/lib/auth'; 
+import { TaskState, TaskPriority } from '@prisma/client';
 
-
-
-export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
+// Updated for Next.js 15: params is now a Promise
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ taskId: string }> }
+) {
   try {
-    const { taskId } = await params;
-    const { state, priority } = await request.json();
+    const resolvedParams = await params;
+    const { taskId } = resolvedParams;
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const task = await prisma.task.findUnique({
+      where: { id: taskId },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        createdBy: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    if (!task) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(task);
+  } catch (error) {
+    console.error('Error fetching task:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch task' },
+      { status: 500 }
+    );
+  }
+}
+
+interface TaskUpdateData {
+  state?: TaskState;
+  priority?: TaskPriority;
+  text?: string;
+  assignedToId?: string | null;
+}
+
+// Updated for Next.js 15: params is now a Promise
+export async function PATCH(
+  request: NextRequest, 
+  { params }: { params: Promise<{ taskId: string }> }
+) {
+  try {
+    const resolvedParams = await params;
+    const { taskId } = resolvedParams;
+    const { state, priority, text, assignedToId } = await request.json();
 
     // First fetch the existing task
     const existingTask = await prisma.task.findUnique({
-      where: { id: taskId }
+      where: { id: taskId },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        createdBy: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      }
     });
 
     if (!existingTask) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    // Check state transitions
-    if (existingTask.state !== 'Approved' && state === 'Approved') {
+    // Handle reward points for state transitions
+    if (state && existingTask.state !== 'Approved' && state === 'Approved') {
       if (existingTask.assignedToId) {
         const user = await prisma.user.findUnique({ 
           where: { id: existingTask.assignedToId } 
@@ -32,7 +105,7 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
           });
         }
       }
-    } else if (existingTask.state === 'Approved' && state !== 'Approved') {
+    } else if (state && existingTask.state === 'Approved' && state !== 'Approved') {
       if (existingTask.assignedToId) {
         const user = await prisma.user.findUnique({ 
           where: { id: existingTask.assignedToId } 
@@ -47,13 +120,31 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
       }
     }
 
+    // Use the proper type for updateData
+    const updateData: TaskUpdateData = {};
+    if (state) updateData.state = state;
+    if (priority) updateData.priority = priority;
+    if (text) updateData.text = text;
+    if (assignedToId !== undefined) updateData.assignedToId = assignedToId;
+
     // Update the task
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: {
-        state,
-        ...(priority ? { priority } : {}),
-      },
+      data: updateData,
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        createdBy: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      }
     });
 
     // Trigger Pusher event with the updated task
@@ -66,12 +157,14 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
   }
 }
 
-export async function DELETE(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
+// Updated for Next.js 15: params is now a Promise
+export async function DELETE(
+  request: NextRequest, 
+  { params }: { params: Promise<{ taskId: string }> }
+) {
   try {
-   // filler to free up for deployment
-  const filler = await request.json();
-  console.log(filler);
-    const { taskId } = await params;
+    const resolvedParams = await params;
+    const { taskId } = resolvedParams;
 
     // Delete the task
     await prisma.task.delete({
@@ -87,7 +180,6 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
   }
 }
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -120,5 +212,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
   }
 }
-
-

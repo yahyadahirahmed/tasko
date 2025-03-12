@@ -13,6 +13,7 @@ export default {
         foreground: "var(--foreground)",
         kanban: "var(--kanban)",
         bluye: "var(--bluye)",
+        lbluye: "var(--lbluye)",
         greeney: "var(--greeney)",
         greyey: "var(--greyey)",
         black: "var(--black)",

@@ -27,6 +27,7 @@ export interface Task {
   state: TaskState;
   position: number;
   priority: TaskPriority; 
+  teamId: string;
   
   // Relations (optional - include if you need them in the UI)
   createdBy?: User;

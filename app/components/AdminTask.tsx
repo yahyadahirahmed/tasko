@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Task as TaskType } from '../types';
 import { useDraggable } from '@dnd-kit/core';
+import Dropdown from './dropdown';
 import { useSession } from 'next-auth/react';
 
 interface TaskProps {
@@ -65,6 +66,9 @@ export function Task({ task }: TaskProps) {
     >
       {task.text}
     </div>
+    <div className=" h-full w-0 ml-1 flex translate-x-[-32px] justify-center items-center">
+          <Dropdown taskId={task.id} />
+        </div>
     </div>
     </>
   );

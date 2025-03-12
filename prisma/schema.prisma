@@ -59,6 +59,7 @@ model User {
   tasksCreated  Task[]   @relation("TaskCreator")
   tasksAssigned Task[]   @relation("TaskAssignee")
   rewardPoints  Int      @default(0) // Added rewardPoints field
+  accessibility Boolean  @default(false)
 
   // A user can manage multiple teams
   managedTeams Team[] @relation("ManagerToTeams")
