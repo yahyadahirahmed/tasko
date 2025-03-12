@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Task as TaskType, TaskPriority, TaskState } from '../types';
+import { Task as TaskType, TaskPriority } from '../types';
 
 interface Props {
   taskId: string;

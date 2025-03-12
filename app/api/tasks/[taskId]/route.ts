@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { pusherServer } from '@/app/lib/pusher';
 import { getServerSession } from 'next-auth'; 
 import { authOptions } from '@/app/lib/auth'; 
+import { TaskState, TaskPriority } from '@prisma/client';
 
 // Add this GET handler
 export async function GET(
@@ -47,6 +48,13 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+interface TaskUpdateData {
+  state?: TaskState;
+  priority?: TaskPriority;
+  text?: string;
+  assignedToId?: string | null;
 }
 
 export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
@@ -106,12 +114,12 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
       }
     }
 
-    // Prepare update data with optional fields
-    const updateData: any = {};
+    // Use the proper type for updateData
+    const updateData: TaskUpdateData = {};
     if (state) updateData.state = state;
     if (priority) updateData.priority = priority;
     if (text) updateData.text = text;
-    if (assignedToId) updateData.assignedToId = assignedToId;
+    if (assignedToId !== undefined) updateData.assignedToId = assignedToId;
 
     // Update the task
     const updatedTask = await prisma.task.update({

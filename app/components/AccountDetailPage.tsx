@@ -29,7 +29,6 @@ export default function AccountDetailButton({ userId }: Props) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data = await response.json();
             setUserData(prev => prev ? { ...prev, accessibility: value } : null);
         } catch (error) {
             console.error('Error updating accessibility:', error);
