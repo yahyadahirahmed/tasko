@@ -42,7 +42,7 @@ export default function TeamsPage() {
               <p>Members: {team.members.length}</p>
               <div className="card-actions justify-end">
                 <button 
-                  className="btn btn-primary"
+                  className="btn btn-info-content"
                   onClick={() => window.location.href = `/admin/teams/${team.id}`}
                 >
                   View Board

@@ -59,7 +59,7 @@ export default function CreateTeamButton() {
   return (
     <>
       <button 
-        className="btn btn-primary"
+        className="mr-4 px-3 py-2 text-md font-bold bg-lbluye hover:bg-bluye rounded"
         onClick={() => {
           const modal = document.getElementById('create_team_modal') as HTMLDialogElement;
           modal?.showModal();
@@ -101,7 +101,7 @@ export default function CreateTeamButton() {
 
             <button 
               type="submit" 
-              className="btn btn-primary w-full"
+              className="mr-4 px-3 py-2 text-md font-bold bg-lbluye hover:bg-bluye rounded w-full"
               disabled={selectedMembers.length === 0}
             >
               Create Team

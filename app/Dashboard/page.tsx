@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import LogoutButton from '../components/LogoutButton';
 import RewardButton from '../components/RewardButton';
-
+import { useSession } from 'next-auth/react';
+import AccountDetailButton from '../components/AccountDetailButton';
 
 interface Team {
   id: string;
@@ -13,8 +14,8 @@ interface Team {
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([]);
+  const { data: session } = useSession();
   
-
   useEffect(() => {
     const fetchTeams = async () => {
       const response = await fetch('/api/teams/memberTeamFind');
@@ -32,7 +33,9 @@ export default function TeamsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">My Teams</h1>
         <RewardButton />
+        <AccountDetailButton userId={session?.user?.id}/> 
         <LogoutButton />
+
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
