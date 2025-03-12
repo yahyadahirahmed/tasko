@@ -5,13 +5,13 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/auth'; 
 import { TaskState, TaskPriority } from '@prisma/client';
 
-// Add this GET handler
+// Fix: Correct type for context parameter in GET
 export async function GET(
   request: NextRequest,
-  context: { params: { taskId: string } }
+  { params }: { params: { taskId: string } }
 ) {
   try {
-    const { taskId } = context.params;
+    const { taskId } = params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
@@ -57,9 +57,13 @@ interface TaskUpdateData {
   assignedToId?: string | null;
 }
 
-export async function PATCH(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
+// Fix: Also update PATCH and DELETE functions to use the same pattern
+export async function PATCH(
+  request: NextRequest, 
+  { params }: { params: { taskId: string } }
+) {
   try {
-    const { taskId } = await params;
+    const { taskId } = params;
     const { state, priority, text, assignedToId } = await request.json();
 
     // First fetch the existing task
@@ -151,10 +155,12 @@ export async function PATCH(request: NextRequest, {params}: { params: Promise<{ 
   }
 }
 
-export async function DELETE(request: NextRequest, {params}: { params: Promise<{ taskId: string; }> }) {
+export async function DELETE(
+  request: NextRequest, 
+  { params }: { params: { taskId: string } }
+) {
   try {
-
-    const { taskId } = await params;
+    const { taskId } = params;
 
     // Delete the task
     await prisma.task.delete({
@@ -170,7 +176,6 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
   }
 }
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -203,5 +208,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
   }
 }
-
-
