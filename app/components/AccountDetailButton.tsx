@@ -10,7 +10,7 @@ export default function AccountDetailButton({ userId }: Props) {
     return (
         <>
             <button 
-                className="btn border-2 shadow:md"
+                className="btn shadow:lg"
                 onClick={() => {
                     const modal = document.getElementById('account_modal') as HTMLDialogElement;
                     if (modal) {
