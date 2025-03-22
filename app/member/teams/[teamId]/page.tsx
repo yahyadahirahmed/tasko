@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import KanbanBoard from '@/app/components/KanbanBoard';
-import RewardButton from '@/app/components/RewardButton';
 import LogoutButton from '@/app/components/LogoutButton';
 
 interface Team {
