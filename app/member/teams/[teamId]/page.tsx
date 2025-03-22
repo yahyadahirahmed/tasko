@@ -45,7 +45,6 @@ export default function TeamBoard() {
           <h1 className="text-2xl font-bold px-4">{team?.name} Board</h1>
         </div>
         <div className="flex-none px-2 gap-2">
-          <RewardButton />
           <LogoutButton />
         </div>
       </div>
