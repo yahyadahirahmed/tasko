@@ -24,5 +24,7 @@ export default withAuth(
 
 // Protect all routes except login, register, etc
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|login|register|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|login|register|favicon.ico|final.mp4).*)",
+  ],
 };
